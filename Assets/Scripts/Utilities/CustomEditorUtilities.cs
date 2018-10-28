@@ -1,4 +1,6 @@
-﻿using UnityEditor;
+﻿#if UNITY_EDITOR
+using UnityEditor;
+#endif
 using System;
 using System.Reflection;
 using System.Collections;
@@ -7,6 +9,7 @@ public class CustomEditorUtilities
 {
     public static void ToggleGizmos(bool gizmosOn)
     {
+#if UNITY_EDITOR
         int val = gizmosOn ? 1 : 0;
         Assembly asm = Assembly.GetAssembly(typeof(Editor));
         Type type = asm.GetType("UnityEditor.AnnotationUtility");
@@ -30,5 +33,6 @@ public class CustomEditorUtilities
                 }
             }
         }
+#endif
     }
 }
