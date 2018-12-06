@@ -21,8 +21,8 @@ public class Player : Character
     private float _vertical, _horizontal, _xforce, _yforce, _centerOfLadder;
     #endregion
 
-    //Deferred physics queue for actions such as jumping and other applied forces.
-    //Basically, if I want certain rigidbody physics operation to happen in FixedUpdate, it's sometimes necessary to add them to a queue and then dequeue them in FixedUpdate.
+    //Deferred physics queue for actions such as jumping and other applied forces. Basically, if I want certain rigidbody physics operation to happen in FixedUpdate,
+    //it's sometimes necessary to add them to a queue and then dequeue them in FixedUpdate.
     private Queue<Action> _force = new Queue<Action>();
 
     public override void Start()
@@ -42,7 +42,7 @@ public class Player : Character
         _horizontal = SetDeadZone(_horizontal, .8f);
         _vertical = SetDeadZone(_vertical, .8f);
 
-        //If the player is airboune, we lower his speed so that he can't jump too far across the screen.
+        //If the player is airboune, we lower his speed so that he can't jump too far across the screen. You can also lerp these values for a smoother transition.
         float speed = _grounded ? 5f : 2.8f;
 
         float climbSpeed = 3f;
@@ -256,7 +256,7 @@ public class Player : Character
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.tag == "Ladder")
+        if (other.CompareTag("Ladder"))
         {
             _nearLadder = false;
         }
@@ -264,13 +264,13 @@ public class Player : Character
 
     private void OnCollisionEnter2D(Collision2D other)
     {
-        if (other.gameObject.tag == "Ground")
+        if (other.gameObject.CompareTag("Ground"))
         {
             _xforce = 0f;
             _yforce = 4.6f;
             _leaping = false;
         }
-        if (other.gameObject.tag == "Enemy")
+        if (other.gameObject.CompareTag("Enemy"))
         {
             Enemy enemy = other.gameObject.GetComponent<Enemy>();
 
@@ -290,7 +290,7 @@ public class Player : Character
 
     private void OnCollisionStay2D(Collision2D other)
     {
-        if (other.gameObject.tag == "Ground")
+        if (other.gameObject.CompareTag("Ground"))
         {
             CheckForEdgeCollision(_controller.NumOfVerticalRayCollisions);
         }

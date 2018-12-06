@@ -13,7 +13,8 @@ public class LevelManager : Singleton<LevelManager>
 
     private int _enemyDeathCount, _totalNumOfEnemies;
 
-    public Func<IEnumerator> OnAllEnemiesKilled;
+    //Notice how I don't declare the Func as static since it's already inside of a singleton.
+    public event Func<IEnumerator> OnAllEnemiesKilled;
 
     protected override void Awake()
     {
