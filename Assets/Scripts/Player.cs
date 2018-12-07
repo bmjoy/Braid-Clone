@@ -25,7 +25,9 @@ public class Player : Character
     //it's sometimes necessary to add them to a queue and then dequeue them in FixedUpdate.
     private Queue<Action> _force = new Queue<Action>();
 
-    public override void Start()
+    public static event Action<Transform> OnDeath;
+
+    protected override void Start()
     {
         base.Start();
         _rb = GetComponent<Rigidbody2D>();
@@ -76,7 +78,7 @@ public class Player : Character
             _force.Dequeue().Invoke();
     }
 
-    public override void Update()
+    protected override void Update()
     {
         base.Update();
 
@@ -283,7 +285,7 @@ public class Player : Character
             }
             else
             {
-                LevelManager.Instance.Kill(gameObject);
+                Death();
             }
         }
     }
@@ -329,6 +331,14 @@ public class Player : Character
     public void ResetTimer()
     {
         IdleTimer.Reset();
+    }
+
+    public override void Death()
+    {
+        Destroy(gameObject);       
+        AudioManager.Instance.Play("playerHurt");
+
+        OnDeath?.Invoke(transform);
     }
 
     private State CurrentState

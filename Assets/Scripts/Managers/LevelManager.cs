@@ -1,6 +1,6 @@
-﻿using UnityEngine;
-using System;
+﻿using System;
 using System.Collections;
+using UnityEngine;
 using XInputDotNetPure;
 
 public class LevelManager : Singleton<LevelManager>
@@ -20,6 +20,12 @@ public class LevelManager : Singleton<LevelManager>
     {
         base.Awake();
 
+        Player.OnDeath += DeathSequence;
+    }
+
+    private void OnDestroy()
+    {
+        Player.OnDeath -= DeathSequence;
     }
 
     private void Start()
@@ -27,13 +33,11 @@ public class LevelManager : Singleton<LevelManager>
         _totalNumOfEnemies = GameObject.FindGameObjectsWithTag("Enemy").Length;
     }
 
-    public void Kill(GameObject player)
+    private void DeathSequence(Transform player)
     {
-        Destroy(player);
-        GameObject go = Instantiate(_deathPrefab, player.transform.position, Quaternion.identity);
+        GameObject go = Instantiate(_deathPrefab, player.position, Quaternion.identity);
         Destroy(go, 2f);
         StartCoroutine(Rumble());
-        AudioManager.Instance.Play("playerHurt");
     }
 
     public int EnemyDeathCount
@@ -44,12 +48,12 @@ public class LevelManager : Singleton<LevelManager>
         }
         set
         {
-            _monstarIcons.transform.GetChild(value - 1).gameObject.GetComponent<SpriteRenderer>().sprite = _darkened;
-            _monstarIcons.transform.GetChild(value - 1).transform.GetChild(0).gameObject.SetActive(true);
-            _gate.transform.GetChild(value - 1).gameObject.SetActive(true);
-            _gate.transform.GetChild(value - 1).transform.GetChild(0).gameObject.SetActive(true);
-
             _enemyDeathCount = value;
+
+            _monstarIcons.transform.GetChild(_enemyDeathCount - 1).gameObject.GetComponent<SpriteRenderer>().sprite = _darkened;
+            _monstarIcons.transform.GetChild(_enemyDeathCount - 1).transform.GetChild(0).gameObject.SetActive(true);
+            _gate.transform.GetChild(_enemyDeathCount - 1).gameObject.SetActive(true);
+            _gate.transform.GetChild(_enemyDeathCount - 1).transform.GetChild(0).gameObject.SetActive(true);
 
             if (_enemyDeathCount == _totalNumOfEnemies)
             {
@@ -63,7 +67,7 @@ public class LevelManager : Singleton<LevelManager>
     }
 
     public void CapturePuzzle()
-    {      
+    {
         _puzzleOutline.SetActive(true);
         _puzzlePiece.SetActive(true);
         AudioManager.Instance.Play("puzzleCaptured");

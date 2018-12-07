@@ -12,13 +12,14 @@ public class Enemy : Character
     [SerializeField]
     private float _speed;
 
-    public override void Start()
+    protected override void Start()
     {
         base.Start();
 
         _rb = GetComponent<Rigidbody2D>();
         _collider = GetComponent<CircleCollider2D>();
 
+        //The direction that the enemy will move towards is based on whether or not it is facing right.
         if (!_facingRight)
         {
             _speed *= -1;
@@ -48,7 +49,7 @@ public class Enemy : Character
         }
     }
 
-    public void Death()
+    public override void Death()
     {
         CurrentState = State.HURT;
         _speed = 0f;

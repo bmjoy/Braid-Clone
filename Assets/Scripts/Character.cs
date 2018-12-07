@@ -1,13 +1,13 @@
 ﻿using UnityEngine;
 
-public class Character : MonoBehaviour
+public abstract class Character : MonoBehaviour
 {
     protected SpriteRenderer _sprite;
     protected Animator _anim;
 
     protected bool _facingRight;
 
-    public virtual void Start()
+    protected virtual void Start()
     {
         _sprite = GetComponent<SpriteRenderer>();
         _anim = GetComponent<Animator>();
@@ -15,10 +15,12 @@ public class Character : MonoBehaviour
         _facingRight = !_sprite.flipX;
     }
 
-    public virtual void Update()
+    protected virtual void Update()
     {
         _facingRight = !_sprite.flipX;
     }
+
+    public abstract void Death();
 
     protected void Flip(bool facingRight)
     {
