@@ -30,16 +30,17 @@ public class Controller2D : MonoBehaviour
         UpdateRaycastOrigins();
     }
 
-    public bool Grounded()
+    public bool IsGrounded()
     {
-        float rayLength = .15f, offset = .02f;
+        float rayLength = .15f;
+        float offset = .02f;
         NumOfVerticalRayCollisions = 0;
 
         Vector2 rayOrigin = _raycastOrigins.bottomLeft + Vector2.up * offset;
 
         for (int i = 0; i < _rayCount; i++)
         {
-            Vector2 ray = rayOrigin + (Vector2.right * ((_verticalRaySpacing) * i));
+            Vector2 ray = rayOrigin + (Vector2.right * (_verticalRaySpacing * i));
             Debug.DrawRay(ray, Vector2.down * rayLength, Color.red);
             bool hit = Physics2D.Raycast(ray, Vector2.down, rayLength, 1 << LayerMask.NameToLayer("Ground"));
 
@@ -48,11 +49,16 @@ public class Controller2D : MonoBehaviour
                 NumOfVerticalRayCollisions++;
             }
         }
-
         return NumOfVerticalRayCollisions > 0;
     }
 
-    public bool Blocked(float horizontal)
+    /// <summary>
+    /// Checks to see if the player is blocked by a wall by casting horizontal rays on either side of him. These rays are very small compared to the vertical ones that check
+    /// if he's grounded.
+    /// </summary>
+    /// <param name="horizontal"></param>
+    /// <returns></returns>
+    public bool IsBlocked(float horizontal)
     {
         float directionX = Mathf.Sign(horizontal);
         float rayLength = .04f, offset = .015f;
@@ -64,7 +70,7 @@ public class Controller2D : MonoBehaviour
             for (int i = 0; i < _rayCount; i++)
             {
                 Vector2 ray = rayOrigin + (Vector2.up * (_horizontalRaySpacing * i));
-                Debug.DrawRay(ray, Vector2.right * directionX * rayLength, Color.red);
+                Debug.DrawRay(ray, Vector2.right * (directionX * rayLength), Color.red);
                 bool hit = Physics2D.Raycast(ray, Vector2.right * directionX, rayLength, 1 << LayerMask.NameToLayer("Wall"));
 
                 if (hit)

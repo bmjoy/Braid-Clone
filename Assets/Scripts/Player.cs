@@ -86,7 +86,7 @@ public class Player : Character
         if (GameManager.Instance.GameIsPaused)
             return;
         //Prevents the player from awkwardly landing on the platforms while climbing.
-        _grounded = (CurrentState == State.CLIMB && _canClimbDown) ? false : _controller.Grounded();
+        _grounded = (CurrentState == State.CLIMB && _canClimbDown) ? false : _controller.IsGrounded();
 
         if (Input.GetButtonDown("Jump"))
         {
@@ -96,7 +96,7 @@ public class Player : Character
 
     private void HorizontalMovement()
     {
-        bool blocked = _controller.Blocked(_horizontal);
+        bool blocked = _controller.IsBlocked(_horizontal);
 
         if (_horizontal != 0f)
         {
@@ -119,7 +119,9 @@ public class Player : Character
 
     }
 
-    //This is for climbing.
+    /// <summary>
+    /// Handles the climbing behavior
+    /// </summary>
     private void VerticalMovement()
     {
         if (_vertical > 0f || _vertical < 0f && _canClimbDown)
@@ -151,8 +153,11 @@ public class Player : Character
         transform.position = new Vector2(_centerOfLadder, transform.position.y);
     }
 
-    //This gets called by the ClimbBehavior script in order to determine if the player is actually moving up or down the ladder, or just staying still on the ladder. 
-    //Also, keep in mind that if the player has reached the very top of the ladder, then 'nearLadder' will be set to false.
+    /// <summary>
+    ///  Determines if the player is actually moving up or down the ladder, or just staying still on the ladder. 
+    ///  Keep in mind that if the player has reached the very top of the ladder, then 'nearLadder' will be set to false.
+    /// </summary>
+    /// <returns></returns>
     public bool ClimbingLadder()
     {
         return (_vertical == 0f || !_nearLadder);
@@ -183,7 +188,9 @@ public class Player : Character
         }
     }
 
-    //If the player is Airbourne, we need to check if it's jumping or landing.
+    /// <summary>
+    /// If the player is Airbourne, we check to see if it's jumping or landing.
+    /// </summary>
     private void CheckAltitude()
     {
         if (!_grounded && CurrentState != State.CLIMB)
@@ -199,7 +206,9 @@ public class Player : Character
         }
     }
 
-    //Checks to see if the player has pressed the 'up' key to look up, or the 'down' key to look down.
+    /// <summary>
+    /// Checks to see if the player has pressed the 'up' key to look up, or the 'down' key to look down.
+    /// </summary>
     private void CheckLookingDirection()
     {
         if (_horizontal == 0f && _grounded)
@@ -221,8 +230,10 @@ public class Player : Character
         }
     }
 
-    //Ghost jumping is a feature that is common in most platformer games. If the player tries to jump off of the very edge of a platform but presses the 'jump' button a little too late,
-    //they still have a little bit of time to make the jump.
+    /// <summary>
+    /// Ghost jumping is a feature that is common in most platformer games. If the player tries to jump off of the very edge of a platform but presses the 'jump' button a little too late,
+    /// they still have a little bit of time to make the jump.
+    /// </summary>
     private void SetGhostJump()
     {
         _ghostJump.time += _grounded ? 1 : -1;
@@ -298,7 +309,10 @@ public class Player : Character
         }
     }
 
-    //If the player is standing too far at the very edge of a platform, they'll be pushed off. This is so that it doesn't look like they're standing in the air.
+    /// <summary>
+    /// If the player is standing too far at the very edge of a platform, they'll be pushed off. This is so that it doesn't look like they're standing in the air.
+    /// </summary>
+    /// <param name="rayCollisions"></param>
     private void CheckForEdgeCollision(int rayCollisions)
     {
         float force = 3.0f;
@@ -316,8 +330,13 @@ public class Player : Character
         }
     }
 
-    //I set the dead zone manually in code, rather than in the editor. This is so that the player's speed does NOT vary depending on how hard or fast the analog stick is being pushed.
-    //Rather, it will remain constant, regardless of how much pressure is being applied to the analog stick.
+    /// <summary>
+    /// I set the dead zone manually in code, rather than in the editor. This is so that the player's speed does NOT vary depending on how hard or fast the analog stick is being pushed.
+    /// Rather, it will remain constant, regardless of how much pressure is being applied to the analog stick.
+    /// </summary>
+    /// <param name="dir"></param>
+    /// <param name="dead"></param>
+    /// <returns></returns>
     private float SetDeadZone(float dir, float dead)
     {
         if (dir < dead && dir > -dead)
@@ -327,7 +346,9 @@ public class Player : Character
         return dir;
     }
 
-    //This is a wrapper function for the Reset method inside of the Timer struct. This is so the editor can call this function as an animation event at the end of the 'impatient' animation.
+    /// <summary>
+    /// Wrapper function for the Reset method inside of the Timer struct. This is so the editor can call this function as an animation event at the end of the 'impatient' animation.
+    /// </summary>
     public void ResetTimer()
     {
         IdleTimer.Reset();
