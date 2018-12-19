@@ -19,7 +19,7 @@ public class Enemy : Character
         _rb = GetComponent<Rigidbody2D>();
         _collider = GetComponent<CircleCollider2D>();
 
-        //The direction that the enemy will move towards is based on whether or not it is facing right.
+        //The enemy's direction is based on whether or not it is facing right.
         if (!_facingRight)
         {
             _speed *= -1;

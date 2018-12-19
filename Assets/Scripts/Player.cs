@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Controller2D))]
+[RequireComponent(typeof(Raycaster))]
 public class Player : Character
 {
-
     #region Components
     private Rigidbody2D _rb;
-    private Controller2D _controller;
+    private Raycaster _raycaster;
     #endregion
 
     #region Structs
@@ -31,7 +30,7 @@ public class Player : Character
     {
         base.Start();
         _rb = GetComponent<Rigidbody2D>();
-        _controller = GetComponent<Controller2D>();
+        _raycaster = GetComponent<Raycaster>();
 
         IdleTimer = new Timer(20f);
     }
@@ -85,8 +84,9 @@ public class Player : Character
         //Prevents the player from jumping when the user hits the spacebar to resume the game.
         if (GameManager.Instance.GameIsPaused)
             return;
+
         //Prevents the player from awkwardly landing on the platforms while climbing.
-        _grounded = (CurrentState == State.CLIMB && _canClimbDown) ? false : _controller.IsGrounded();
+        _grounded = (CurrentState == State.CLIMB && _canClimbDown) ? false : _raycaster.IsGrounded();
 
         if (Input.GetButtonDown("Jump"))
         {
@@ -96,7 +96,7 @@ public class Player : Character
 
     private void HorizontalMovement()
     {
-        bool blocked = _controller.IsBlocked(_horizontal);
+        bool blocked = _raycaster.IsBlocked(_horizontal);
 
         if (_horizontal != 0f)
         {
@@ -120,7 +120,7 @@ public class Player : Character
     }
 
     /// <summary>
-    /// Handles the climbing behavior
+    /// For climbing behavior
     /// </summary>
     private void VerticalMovement()
     {
@@ -305,7 +305,7 @@ public class Player : Character
     {
         if (other.gameObject.CompareTag("Ground"))
         {
-            CheckForEdgeCollision(_controller.NumOfVerticalRayCollisions);
+            CheckForEdgeCollision(_raycaster.NumOfVerticalRayCollisions);
         }
     }
 

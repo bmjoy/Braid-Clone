@@ -3,7 +3,7 @@
 //Based on Sebastian Lague's excellent tutorial on how to create a character controller https://www.youtube.com/watch?v=MbWK8bCAU2w
 
 [RequireComponent(typeof(BoxCollider2D))]
-public class Controller2D : MonoBehaviour
+public class Raycaster : MonoBehaviour
 {
     private BoxCollider2D _col;
     private Bounds _bounds;
@@ -14,7 +14,6 @@ public class Controller2D : MonoBehaviour
 
     private float _verticalRaySpacing, _horizontalRaySpacing;
 
-    // This is a property because it's read by the Player's 'CheckForEdgeCollision' function.
     public int NumOfVerticalRayCollisions { get; private set; }
 
     private void Start()
