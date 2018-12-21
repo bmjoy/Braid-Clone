@@ -43,7 +43,7 @@ public class Player : Character
         _horizontal = SetDeadZone(_horizontal, .8f);
         _vertical = SetDeadZone(_vertical, .8f);
 
-        //If the player is airboune, we lower his speed so that he can't jump too far across the screen. You can also lerp these values for a smoother transition.
+        //If the player is airbourne, we lower his speed so that he can't jump too far across the screen. You can also lerp these values for a smoother transition.
         float speed = _grounded ? 5f : 2.8f;
 
         float climbSpeed = 3f;
@@ -178,7 +178,7 @@ public class Player : Character
 
     private void ApplyForce()
     {
-        //I want this rigidbody operation to happen in FixedUpdate rather than update. To do this, I add it to a queue and then dequeue it in FixedUpdate.
+        //I want this rigidbody operation to happen in FixedUpdate rather than Update. To do this, I add it to a queue and then dequeue it in FixedUpdate.
         _force.Enqueue(() => _rb.AddForce(new Vector2(_xforce, _yforce), ForceMode2D.Impulse));
 
         if (_xforce > 0f)
@@ -356,7 +356,7 @@ public class Player : Character
 
     public override void Death()
     {
-        Destroy(gameObject);       
+        Destroy(gameObject);
         AudioManager.Instance.Play("playerHurt");
 
         OnDeath?.Invoke(transform);
