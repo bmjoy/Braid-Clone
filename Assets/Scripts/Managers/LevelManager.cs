@@ -13,10 +13,6 @@ public class LevelManager : Singleton<LevelManager>
 
     private int _enemyDeathCount, _totalNumOfEnemies;
 
-    /// <summary>
-    /// Notice how I don't declare the Func as static. This is because it is already inside of a singleton - which itself contains a static reference to all public fields,
-    /// properties and functions inside of the class.
-    /// </summary>
     public event Func<IEnumerator> OnAllEnemiesKilled;
 
     protected override void Awake()

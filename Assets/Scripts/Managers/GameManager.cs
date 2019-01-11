@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 public class GameManager : Singleton<GameManager>
 {
 
-    public bool GameIsPaused { get { return Time.deltaTime == 0f; } }
+    public static bool GameIsPaused { get { return Time.deltaTime == 0f; } }
 
     protected override void Awake()
     {

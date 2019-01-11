@@ -84,7 +84,7 @@ public class Player : Character
         base.Update();
 
         //Prevents the player from jumping when the user hits the spacebar to resume the game.
-        if (GameManager.Instance.GameIsPaused)
+        if (GameManager.GameIsPaused)
             return;
 
         //Prevents the player from awkwardly landing on the platforms while climbing.
@@ -240,7 +240,6 @@ public class Player : Character
     {
         _ghostJump.time += _grounded ? 1 : -1;
         _ghostJump.time = Mathf.Clamp(_ghostJump.time, GhostJump.MIN_TIME, GhostJump.MAX_TIME);
-
         _ghostJump.enabled = _ghostJump.time > 0 && CurrentState != State.CLIMB;
     }
 
@@ -287,7 +286,7 @@ public class Player : Character
         }
         if (other.gameObject.CompareTag("Enemy"))
         {
-            Enemy enemy = other.gameObject.GetComponent<Enemy>();
+            var enemy = other.gameObject.GetComponent<Enemy>();
 
             if (other.contacts[0].normal.y > 0f && CurrentState != State.CLIMB)
             {
@@ -317,11 +316,11 @@ public class Player : Character
     /// <param name="rayCollisions"></param>
     private void CheckForEdgeCollision(int rayCollisions)
     {
-        float force = 3.0f;
+        var force = 3f;
 
         if (rayCollisions == 1)
-        {   //Since I can't call this rigidbody operation directly in FixedUpdate, I instead add it to a queue and then dequeue it in FixedUpdate.
-            _physicsQueue.Enqueue(() => _rb.velocity = new Vector2((_facingRight ? force : -force), _rb.velocity.y));
+        {   //Since I can't call this rigidbody operation directly in FixedUpdate, I instead add it to _physicsQueue - which will automatically dequeue everything inside of it in FixedUpdate.        
+            _physicsQueue.Enqueue(() => _rb.AddForce(force * (_facingRight ? Vector2.right : Vector2.left), ForceMode2D.Impulse));
         }
     }
 
@@ -353,7 +352,6 @@ public class Player : Character
     {
         Destroy(gameObject);
         AudioManager.Instance.Play("playerHurt");
-
         OnDeath?.Invoke(transform);
     }
 
