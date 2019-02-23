@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Raycaster))]
@@ -19,11 +18,6 @@ public class Player : Character
     private bool _grounded, _leaping, _nearLadder, _canClimbDown;
     private float _vertical, _horizontal, _xforce, _yforce, _centerOfLadder;
     #endregion
-
-    /// <summary>
-    /// Certain rigidbody operations that cannot be directly called inside of FixedUpdate will instead be added to this queue and then dequeued inside of FixedUpdate. 
-    /// </summary>
-    private Queue<Action> _physicsQueue = new Queue<Action>();
 
     public static event Action<Transform> OnDeath;
 
@@ -74,9 +68,6 @@ public class Player : Character
         {
             _rb.velocity = new Vector2(_horizontal * speed, _rb.velocity.y);
         }
-
-        while (_physicsQueue.Count > 0)
-            _physicsQueue.Dequeue().Invoke();
     }
 
     protected override void Update()
@@ -180,8 +171,7 @@ public class Player : Character
 
     private void ApplyForce()
     {
-        //I want this rigidbody operation to happen in FixedUpdate rather than Update. To do this, I add it to a queue and then dequeue it in FixedUpdate.
-        _physicsQueue.Enqueue(() => _rb.AddForce(new Vector2(_xforce, _yforce), ForceMode2D.Impulse));
+        _rb.AddForce(new Vector2(_xforce, _yforce), ForceMode2D.Impulse);
 
         if (_xforce > 0f)
         {
@@ -319,8 +309,8 @@ public class Player : Character
         var force = 3f;
 
         if (rayCollisions == 1)
-        {   //Since I can't call this rigidbody operation directly in FixedUpdate, I instead add it to _physicsQueue - which will automatically dequeue everything inside of it in FixedUpdate.        
-            _physicsQueue.Enqueue(() => _rb.AddForce(force * (_facingRight ? Vector2.right : Vector2.left), ForceMode2D.Impulse));
+        {
+            _rb.AddForce(force * (_facingRight ? Vector2.right : Vector2.left), ForceMode2D.Impulse);
         }
     }
 
