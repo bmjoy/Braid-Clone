@@ -181,7 +181,7 @@ public class Player : Character
     }
 
     /// <summary>
-    /// If the player is Airbourne, we check to see if it's jumping or landing.
+    /// If the player is airbourne, checks to see if it's jumping or landing.
     /// </summary>
     private void CheckAltitude()
     {
