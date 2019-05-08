@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-//Based on Sebastian Lague's excellent tutorial on how to create a character controller https://www.youtube.com/watch?v=MbWK8bCAU2w
+//Based on Sebastian Lague's tutorial on how to create a character controller https://www.youtube.com/watch?v=MbWK8bCAU2w
 
 [RequireComponent(typeof(BoxCollider2D))]
 public class Raycaster : MonoBehaviour

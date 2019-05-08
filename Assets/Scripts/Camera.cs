@@ -6,13 +6,12 @@ namespace myCamera
     {
         private void Awake()
         {
-            //Disable all unnecessary script icons in the Scene view.
+            //Disables all unnecessary script icons in the Scene view.
 #if UNITY_EDITOR
             CustomEditorUtilities.ToggleGizmos(false);
 #endif
-            //Ensure the proper resolution is set when the game is built and run.
-            Screen.SetResolution(1920, 1080, true);
-
+            
+            Screen.SetResolution(1920, 1080, true); //Ensures the proper resolution is set when the game is built and run.
             Cursor.visible = false;
         }
     }

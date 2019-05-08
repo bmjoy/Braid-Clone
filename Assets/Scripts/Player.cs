@@ -35,12 +35,10 @@ public class Player : Character
         _horizontal = Input.GetAxisRaw("Horizontal");
         _vertical = Input.GetAxisRaw("Vertical");
 
-        _horizontal = SetDeadZone(_horizontal, .8f);
-        _vertical = SetDeadZone(_vertical, .8f);
-
-        //If the player is airbourne, we lower his speed so that he can't jump too far across the screen. You can also lerp these values for a smoother transition.
-        float speed = _grounded ? 5f : 2.8f;
-
+        SetDeadZone(ref _horizontal, .8f);
+        SetDeadZone(ref _vertical, .8f);
+        
+        float speed = _grounded ? 5f : 2.8f; //If the player is airbourne, we lower his speed so that he can't jump too far across the screen. These values can also be lerped for a smoother transition.
         float climbSpeed = 3f;
 
         SetGhostJump();
@@ -58,7 +56,7 @@ public class Player : Character
                 _rb.velocity = new Vector2(_horizontal * speed, (_vertical > 0f) ? 0f : _vertical * climbSpeed);
             }
         }
-        else if (CurrentState == State.MoveTowardsLadder)
+        else if (CurrentState == State.MOVE_TOWARDS_LADDER)
         {
             Vector2 ladder = new Vector2(_centerOfLadder, transform.position.y);
             var position = Vector2.MoveTowards(transform.position, ladder, speed * Time.deltaTime);
@@ -125,6 +123,7 @@ public class Player : Character
                     MoveTowardsLadder();
 
                 float offset = .1f;
+
                 if (Mathf.Abs(transform.position.x - _centerOfLadder) <= offset)
                 {
                     ClimbLadder();
@@ -136,7 +135,7 @@ public class Player : Character
 
     private void MoveTowardsLadder()
     {
-        CurrentState = State.MoveTowardsLadder;
+        CurrentState = State.MOVE_TOWARDS_LADDER;
         Flip(_centerOfLadder - transform.position.x >= 0f);
     }
 
@@ -321,13 +320,12 @@ public class Player : Character
     /// <param name="dir"></param>
     /// <param name="dead"></param>
     /// <returns></returns>
-    private float SetDeadZone(float dir, float dead)
+    private void SetDeadZone(ref float dir, float dead)
     {
         if (dir < dead && dir > -dead)
         {
-            return 0f;
+            dir = 0f;
         }
-        return dir;
     }
 
     /// <summary>
@@ -366,7 +364,7 @@ public class Player : Character
         FALL = 3,
         CLIMB = 4,
         LOOKING_DOWN = 5,
-        MoveTowardsLadder = 6,
+        MOVE_TOWARDS_LADDER = 6,
         IMPATIENT = 7,
         LOOKING_UP = 8,
         STUCK = 9,

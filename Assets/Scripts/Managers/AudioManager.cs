@@ -2,7 +2,7 @@ using UnityEngine.Audio;
 using System;
 using UnityEngine;
 
-//Based on Brackeys excellent tutorial on how to create an AudioManager https://www.youtube.com/watch?v=6OT43pvUyfY
+//Based on Brackeys tutorial on how to create an AudioManager https://www.youtube.com/watch?v=6OT43pvUyfY
 public class AudioManager : Singleton<AudioManager>
 {
     [SerializeField]
@@ -15,13 +15,13 @@ public class AudioManager : Singleton<AudioManager>
     {
         base.Awake();
 
-        foreach (Sound s in _sounds)
+        foreach (var sound in _sounds)
         {
-            s.source = gameObject.AddComponent<AudioSource>();
+            sound.source = gameObject.AddComponent<AudioSource>();
 
-            s.source.clip = s.clip;
-            s.source.loop = s.loop;
-			s.source.outputAudioMixerGroup = s.mixerGroup;
+            sound.source.clip = sound.clip;
+            sound.source.loop = sound.loop;
+			sound.source.outputAudioMixerGroup = sound.mixerGroup;
         }      
     }
 
