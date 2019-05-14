@@ -20,7 +20,7 @@ public class Enemy : Character
         _collider = GetComponent<CircleCollider2D>();
 
         //The enemy's direction is based on whether or not it is facing right.
-        if (!_facingRight)
+        if (!isFacingRight)
         {
             _speed *= -1;
         }
@@ -65,14 +65,8 @@ public class Enemy : Character
 
     private State CurrentState
     {
-        get
-        {
-            return (State)_anim.GetInteger("State");
-        }
-        set
-        {
-            _anim.SetInteger("State", (int)value);
-        }
+        get => (State)_anim.GetInteger("State");
+        set => _anim.SetInteger("State", (int)value);
     }
 
     private enum State

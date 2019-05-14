@@ -9,7 +9,7 @@ public class LevelManager : Singleton<LevelManager>
     private GameObject _deathPrefab, _monstarIcons, _gate, _puzzleOutline, _puzzlePiece;
 
     [SerializeField]
-    private Sprite _darkened;
+    private Sprite _darkenedEnemyIcon;
 
     private int _enemyDeathCount, _totalNumOfEnemies;
 
@@ -34,22 +34,20 @@ public class LevelManager : Singleton<LevelManager>
 
     private void DeathSequence(Transform player)
     {
-        GameObject go = Instantiate(_deathPrefab, player.position, Quaternion.identity);
+        var go = Instantiate(_deathPrefab, player.position, Quaternion.identity);
         Destroy(go, 2f);
         StartCoroutine(Rumble());
     }
 
     public int EnemyDeathCount
     {
-        get
-        {
-            return _enemyDeathCount;
-        }
+        get => _enemyDeathCount;
+
         set
         {
             _enemyDeathCount = value;
 
-            _monstarIcons.transform.GetChild(_enemyDeathCount - 1).gameObject.GetComponent<SpriteRenderer>().sprite = _darkened;
+            _monstarIcons.transform.GetChild(_enemyDeathCount - 1).gameObject.GetComponent<SpriteRenderer>().sprite = _darkenedEnemyIcon;
             _monstarIcons.transform.GetChild(_enemyDeathCount - 1).transform.GetChild(0).gameObject.SetActive(true);
             _gate.transform.GetChild(_enemyDeathCount - 1).gameObject.SetActive(true);
             _gate.transform.GetChild(_enemyDeathCount - 1).transform.GetChild(0).gameObject.SetActive(true);

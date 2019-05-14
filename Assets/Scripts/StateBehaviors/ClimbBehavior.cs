@@ -25,16 +25,13 @@ public class ClimbBehavior : StateMachineBehaviour
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         //If the player is on the ladder but not moving, or the player has reached the top of the ladder, then the animation speed should be zero, else it should be one.
-        animator.speed = Convert.ToInt32(!_player.ClimbingLadder());
+        animator.speed = Convert.ToInt32(!_player.IsClimbingLadder);
     }
 
-    #region Layer Handling
+    #region Layer handling
     private Layer CurrentLayer
     {
-        set
-        {
-            _player.gameObject.layer = (int)value;
-        }
+        set => _player.gameObject.layer = (int)value;
     }
 
     private enum Layer

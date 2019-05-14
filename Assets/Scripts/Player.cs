@@ -15,12 +15,20 @@ public class Player : Character
     #endregion
 
     #region Primitives
-    private bool _grounded, _leaping, _nearLadder, _canClimbDown;
+    private bool isGrounded, isLeaping, isNearLadder, canClimbDown;
     private float _vertical, _horizontal, _xforce, _yforce, _centerOfLadder;
     #endregion
 
+    /// <summary>
+    ///  Determines if the player is actually moving up or down the ladder, or just staying still on the ladder. 
+    ///  Keep in mind that if the player has reached the very top of the ladder, then 'nearLadder' will be set to false.
+    /// </summary>
+    /// <returns></returns>
+    public bool IsClimbingLadder => (_vertical == 0f || !isNearLadder);
+
     public static event Action<Transform> OnDeath;
 
+    #region Unity callbacks
     protected override void Start()
     {
         base.Start();
@@ -38,8 +46,8 @@ public class Player : Character
         SetDeadZone(ref _horizontal, .8f);
         SetDeadZone(ref _vertical, .8f);
         
-        float speed = _grounded ? 5f : 2.8f; //If the player is airbourne, we lower his speed so that he can't jump too far across the screen. These values can also be lerped for a smoother transition.
-        float climbSpeed = 3f;
+        var speed = isGrounded ? 5f : 2.8f; //If the player is airbourne, we lower his speed so that he can't jump too far across the screen. These values can also be lerped for a smoother transition.
+        var climbSpeed = 3f;
 
         SetGhostJump();
         CheckAltitude();
@@ -49,7 +57,7 @@ public class Player : Character
 
         if (CurrentState == State.CLIMB)
         {
-            if (_nearLadder)
+            if (isNearLadder)
                 _rb.velocity = new Vector2(_horizontal * speed, _vertical * climbSpeed);
             else
             {
@@ -58,178 +66,29 @@ public class Player : Character
         }
         else if (CurrentState == State.MOVE_TOWARDS_LADDER)
         {
-            Vector2 ladder = new Vector2(_centerOfLadder, transform.position.y);
+            var ladder = new Vector2(_centerOfLadder, transform.position.y);
             var position = Vector2.MoveTowards(transform.position, ladder, speed * Time.deltaTime);
             _rb.MovePosition(position);
         }
-        else if (!_leaping)
+        else if (!isLeaping)
         {
             _rb.velocity = new Vector2(_horizontal * speed, _rb.velocity.y);
         }
     }
 
-    protected override void Update()
+    private void Update()
     {
-        base.Update();
-
         //Prevents the player from jumping when the user hits the spacebar to resume the game.
-        if (GameManager.GameIsPaused)
+        if (GameManager.IsGamePaused)
             return;
 
         //Prevents the player from awkwardly landing on the platforms while climbing.
-        _grounded = (CurrentState == State.CLIMB && _canClimbDown) ? false : _raycaster.IsGrounded();
+        isGrounded = (CurrentState == State.CLIMB && canClimbDown) ? false : _raycaster.IsGrounded();
 
         if (Input.GetButtonDown("Jump"))
         {
             Jump();
         }
-    }
-
-    private void HorizontalMovement()
-    {
-        bool blocked = _raycaster.IsBlocked(_horizontal);
-
-        if (_horizontal != 0f)
-        {
-            Flip(_horizontal > 0f);
-
-            if (!blocked)
-            {
-                if (_grounded || CurrentState == State.CLIMB)
-                    CurrentState = State.WALK;
-            }
-            else if (_grounded)
-                CurrentState = State.STUCK;
-        }
-        else if (_grounded && _vertical == 0f)
-        {
-            //If player is idle for a certain amount of time, switch to an impatient state.
-            IdleTimer.Tick();
-            CurrentState = IdleTimer.IsFinished ? State.IMPATIENT : State.IDLE;
-        }
-
-    }
-
-    /// <summary>
-    /// For climbing behavior
-    /// </summary>
-    private void VerticalMovement()
-    {
-        if (_vertical > 0f || _vertical < 0f && _canClimbDown)
-        {
-            if (_nearLadder)
-            {
-                if (CurrentState != State.CLIMB)
-                    MoveTowardsLadder();
-
-                float offset = .1f;
-
-                if (Mathf.Abs(transform.position.x - _centerOfLadder) <= offset)
-                {
-                    ClimbLadder();
-                }
-                _horizontal = 0f;
-            }
-        }
-    }
-
-    private void MoveTowardsLadder()
-    {
-        CurrentState = State.MOVE_TOWARDS_LADDER;
-        Flip(_centerOfLadder - transform.position.x >= 0f);
-    }
-
-    private void ClimbLadder()
-    {
-        CurrentState = State.CLIMB;
-        transform.position = new Vector2(_centerOfLadder, transform.position.y);
-    }
-
-    /// <summary>
-    ///  Determines if the player is actually moving up or down the ladder, or just staying still on the ladder. 
-    ///  Keep in mind that if the player has reached the very top of the ladder, then 'nearLadder' will be set to false.
-    /// </summary>
-    /// <returns></returns>
-    public bool ClimbingLadder()
-    {
-        return (_vertical == 0f || !_nearLadder);
-    }
-
-    private void Jump()
-    {
-        if (_grounded || _ghostJump.enabled)
-        {
-            _ghostJump.time = 0;
-            ApplyForce();
-            AudioManager.Instance.Play("playerJump");
-        }
-
-        if (CurrentState == State.CLIMB && _vertical == 0f)
-            CurrentState = State.FALL;
-    }
-
-    private void ApplyForce()
-    {
-        _rb.AddForce(new Vector2(_xforce, _yforce), ForceMode2D.Impulse);
-
-        if (_xforce > 0f)
-        {
-            //Don't confuse leaping for jumping! Leaping is when the player is bouncing off of enemy(3) in order to reach platform(3).
-            _leaping = true;
-        }
-    }
-
-    /// <summary>
-    /// If the player is airbourne, checks to see if it's jumping or landing.
-    /// </summary>
-    private void CheckAltitude()
-    {
-        if (!_grounded && CurrentState != State.CLIMB)
-        {
-            if (_rb.velocity.y > .01f)
-            {
-                CurrentState = State.JUMP;
-            }
-            else if (_rb.velocity.y < -.01f)
-            {
-                CurrentState = State.FALL;
-            }
-        }
-    }
-
-    /// <summary>
-    /// Checks to see if the player has pressed the 'up' key to look up, or the 'down' key to look down.
-    /// </summary>
-    private void CheckLookingDirection()
-    {
-        if (_horizontal == 0f && _grounded)
-        {
-            if (_vertical > 0f)
-            {
-                if (!_nearLadder && CurrentState != State.CLIMB)
-                {
-                    CurrentState = State.LOOKING_UP;
-                }
-            }
-            else if (_vertical < 0f)
-            {
-                if (!_nearLadder || !_canClimbDown)
-                {
-                    CurrentState = State.LOOKING_DOWN;
-                }
-            }
-        }
-    }
-
-    /// <summary>
-    /// Ghost jumping is a feature that is common in most platformer games. If the player tries to jump off of the very edge of a platform but presses the 'jump' button a little too late,
-    /// they still have a little bit of time to make the jump.
-    /// </summary>
-    private void SetGhostJump()
-    {
-        _ghostJump.time += _grounded ? 1 : -1;
-        _ghostJump.time = Mathf.Clamp(_ghostJump.time, GhostJump.MIN_TIME, GhostJump.MAX_TIME);
-        _ghostJump.enabled = _ghostJump.time > 0 && CurrentState != State.CLIMB;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -241,14 +100,14 @@ public class Player : Character
                 LevelManager.Instance.CapturePuzzle();
                 break;
             case "Ladder":
-                _nearLadder = true;
+                isNearLadder = true;
                 _centerOfLadder = other.bounds.center.x;
                 break;
             case "ClimbDownTrue":
-                _canClimbDown = true;
+                canClimbDown = true;
                 break;
             case "ClimbDownFalse":
-                _canClimbDown = false;
+                canClimbDown = false;
                 break;
             case "AddedBounce":
                 _xforce = 3.4f;
@@ -261,7 +120,7 @@ public class Player : Character
     {
         if (other.CompareTag("Ladder"))
         {
-            _nearLadder = false;
+            isNearLadder = false;
         }
     }
 
@@ -271,8 +130,9 @@ public class Player : Character
         {
             _xforce = 0f;
             _yforce = 4.6f;
-            _leaping = false;
+            isLeaping = false;
         }
+
         if (other.gameObject.CompareTag("Enemy"))
         {
             var enemy = other.gameObject.GetComponent<Enemy>();
@@ -298,6 +158,144 @@ public class Player : Character
             CheckForEdgeCollision(_raycaster.NumOfVerticalRayCollisions);
         }
     }
+    #endregion
+
+    private void HorizontalMovement()
+    {
+        bool blocked = _raycaster.IsBlocked(_horizontal);
+
+        if (_horizontal != 0f)
+        {
+            Flip(_horizontal > 0f);
+
+            if (!blocked)
+            {
+                if (isGrounded || CurrentState == State.CLIMB)
+                    CurrentState = State.WALK;
+            }
+            else if (isGrounded)
+                CurrentState = State.STUCK;
+        }
+        else if (isGrounded && _vertical == 0f)
+        {
+            //If player is idle for a certain amount of time, switch to an impatient state.
+            IdleTimer.Tick();
+            CurrentState = IdleTimer.IsFinished ? State.IMPATIENT : State.IDLE;
+        }
+
+    }
+
+    /// <summary>
+    /// Handles climbing behavior
+    /// </summary>
+    private void VerticalMovement()
+    {
+        if (_vertical > 0f || _vertical < 0f && canClimbDown)
+        {
+            if (isNearLadder)
+            {
+                if (CurrentState != State.CLIMB)
+                    MoveTowardsLadder();
+
+                var offset = .1f;
+
+                if (Mathf.Abs(transform.position.x - _centerOfLadder) <= offset)
+                {
+                    ClimbLadder();
+                }
+                _horizontal = 0f;
+            }
+        }
+    }
+
+    private void MoveTowardsLadder()
+    {
+        CurrentState = State.MOVE_TOWARDS_LADDER;
+        Flip(_centerOfLadder - transform.position.x >= 0f);
+    }
+
+    private void ClimbLadder()
+    {
+        CurrentState = State.CLIMB;
+        transform.position = new Vector2(_centerOfLadder, transform.position.y);
+    }
+
+    private void Jump()
+    {
+        if (isGrounded || _ghostJump.enabled)
+        {
+            _ghostJump.time = 0;
+            ApplyForce();
+            AudioManager.Instance.Play("playerJump");
+        }
+
+        if (CurrentState == State.CLIMB && _vertical == 0f)
+            CurrentState = State.FALL;
+    }
+
+    private void ApplyForce()
+    {
+        _rb.AddForce(new Vector2(_xforce, _yforce), ForceMode2D.Impulse);
+
+        if (_xforce > 0f)
+        {
+            //Don't confuse leaping for jumping! Leaping is when the player is bouncing off of enemy(3) in order to reach platform(3).
+            isLeaping = true;
+        }
+    }
+
+    /// <summary>
+    /// If the player is airbourne, checks to see if he's jumping or landing.
+    /// </summary>
+    private void CheckAltitude()
+    {
+        if (!isGrounded && CurrentState != State.CLIMB)
+        {
+            if (_rb.velocity.y > .01f)
+            {
+                CurrentState = State.JUMP;
+            }
+            else if (_rb.velocity.y < -.01f)
+            {
+                CurrentState = State.FALL;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Checks to see if the player has pressed the 'up' key to look up, or the 'down' key to look down.
+    /// </summary>
+    private void CheckLookingDirection()
+    {
+        if (_horizontal == 0f && isGrounded)
+        {
+            if (_vertical > 0f)
+            {
+                if (!isNearLadder && CurrentState != State.CLIMB)
+                {
+                    CurrentState = State.LOOKING_UP;
+                }
+            }
+            else if (_vertical < 0f)
+            {
+                if (!isNearLadder || !canClimbDown)
+                {
+                    CurrentState = State.LOOKING_DOWN;
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Ghost jumping is a feature that is common in most platformer games. If the player tries to jump off of the very edge of a platform but presses the 'jump' button a little too late,
+    /// they still have a little bit of time to make the jump.
+    /// </summary>
+    private void SetGhostJump()
+    {
+        _ghostJump.time += isGrounded ? 1 : -1;
+        _ghostJump.time = Mathf.Clamp(_ghostJump.time, GhostJump.MIN_TIME, GhostJump.MAX_TIME);
+        _ghostJump.enabled = _ghostJump.time > 0 && CurrentState != State.CLIMB;
+    }
 
     /// <summary>
     /// If the player is standing too far at the very edge of a platform, they'll be pushed off. This is so that it doesn't look like they're standing in the air.
@@ -309,7 +307,7 @@ public class Player : Character
 
         if (rayCollisions == 1)
         {
-            _rb.AddForce(force * (_facingRight ? Vector2.right : Vector2.left), ForceMode2D.Impulse);
+            _rb.AddForce(force * (isFacingRight ? Vector2.right : Vector2.left), ForceMode2D.Impulse);
         }
     }
 
@@ -345,14 +343,8 @@ public class Player : Character
 
     private State CurrentState
     {
-        get
-        {
-            return (State)_anim.GetInteger("State");
-        }
-        set
-        {
-            _anim.SetInteger("State", (int)value);
-        }
+        get => (State)_anim.GetInteger("State");
+        set => _anim.SetInteger("State", (int)value);
     }
 
     #region Types

@@ -2,12 +2,11 @@
 using UnityEngine;
 
 public class ColorChanger : MonoBehaviour
-{
-    
+{   
     private TextMeshProUGUI _textMeshPro;
     private Color _myColor, _startColor, _targetColor;
 
-    public bool CurrentlyActive { get; set; }
+    public bool IsCurrentlyActive { get; set; }
 
     private void Start()
     {
@@ -22,9 +21,10 @@ public class ColorChanger : MonoBehaviour
 
     private void ChangeColor()
     {
-        if (CurrentlyActive)
+        if (IsCurrentlyActive)
         {
-            _myColor = Color.Lerp(_startColor, Color.red, Mathf.PingPong(Time.unscaledTime, .7f));
+            var colorBlendValue = .7f;
+            _myColor = Color.Lerp(_startColor, Color.red, Mathf.PingPong(Time.unscaledTime, colorBlendValue));
             _textMeshPro.color = _myColor;
         }
         else

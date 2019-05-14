@@ -27,37 +27,24 @@ public class SoundMenu : MonoBehaviour
     {
         get
         {
-            float value;
-            audioMixer.GetFloat("SFXVolume", out value);
+            audioMixer.GetFloat("SFXVolume", out var value);
             return value;
         }
-        set
-        {
-            audioMixer.SetFloat("SFXVolume", value);
-        }
+        set => audioMixer.SetFloat("SFXVolume", value);
     }
 
     public float MusicVolume
     {
         get
         {
-            float value;
-            audioMixer.GetFloat("MusicVolume", out value);
+            audioMixer.GetFloat("MusicVolume", out var value);
             return value;
         }
-        set
-        {
-            audioMixer.SetFloat("MusicVolume", value);
-        }
+        set => audioMixer.SetFloat("MusicVolume", value);
     }
 
-    public void SetSFXVolume(float volume)
-    {
-        SFXVolume = volume;
-    }
+    public void SetSFXVolume(float volume) => SFXVolume = volume;
 
-	public void SetMusicVolume(float volume)
-	{
-        MusicVolume = volume;
-	}
+	public void SetMusicVolume(float volume) => MusicVolume = volume;
+
 }

@@ -3,7 +3,7 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : Singleton<GameManager>
 {
-    public static bool GameIsPaused => Time.deltaTime == 0f;
+    public static bool IsGamePaused => Time.deltaTime == 0f;
 
     protected override void Awake()
     {
@@ -12,12 +12,12 @@ public class GameManager : Singleton<GameManager>
         Time.timeScale = 1f;
     }
 
-    public void Resume()
+    public void ResumeTime()
     {
         Time.timeScale = 1f;      
     }
 
-    public void Pause()
+    public void PauseTime()
     {
         Time.timeScale = 0f;
     }

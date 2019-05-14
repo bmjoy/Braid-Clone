@@ -5,11 +5,6 @@ public class UIManager : Singleton<UIManager>
     [SerializeField]
     private GameObject _menuBackground, _audioMenuUI, _pauseMenuUI;
 
-    protected override void Awake()
-    {
-        base.Awake();
-    }
-
     private void Update()
     {
         if (Input.GetButtonDown("Cancel"))
@@ -21,24 +16,16 @@ public class UIManager : Singleton<UIManager>
 
     private void StateUpdate()
     {
-        switch (CurrentState)
+        switch (GetCurrentState)
         {
             case UIState.GAME:
                 {
-                    _menuBackground.SetActive(true);
-                    _pauseMenuUI.SetActive(true);
-                    _audioMenuUI.SetActive(false);
-                    GameManager.Instance.Pause();
-                    AudioManager.Instance.PauseMusic();                   
+                    PauseGame();
                     break;
                 }
             case UIState.MAIN_MENU:
                 {
-                    _menuBackground.SetActive(false);
-                    _audioMenuUI.SetActive(false);
-                    _pauseMenuUI.SetActive(false);
-                    GameManager.Instance.Resume();
-                    AudioManager.Instance.ResumeMusic();
+                    ResumeGame();
                     break;
                 }
             case UIState.AUDIO:
@@ -50,6 +37,24 @@ public class UIManager : Singleton<UIManager>
         }
     }
 
+    private void PauseGame()
+    {
+        _menuBackground.SetActive(true);
+        _pauseMenuUI.SetActive(true);
+        _audioMenuUI.SetActive(false);
+        GameManager.Instance.PauseTime();
+        AudioManager.Instance.PauseMusic();
+    }
+
+    public void ResumeGame()
+    {
+        _menuBackground.SetActive(false);
+        _audioMenuUI.SetActive(false);
+        _pauseMenuUI.SetActive(false);
+        GameManager.Instance.ResumeTime();
+        AudioManager.Instance.ResumeMusic();
+    }
+
     public enum UIState
     {
         MAIN_MENU,
@@ -57,7 +62,7 @@ public class UIManager : Singleton<UIManager>
         GAME,
     }
 
-    public UIState CurrentState
+    public UIState GetCurrentState
     {
         get
         {

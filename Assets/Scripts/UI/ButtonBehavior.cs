@@ -3,14 +3,26 @@ using UnityEngine.EventSystems;
 
 public class ButtonBehavior : MonoBehaviour, ISelectHandler, IDeselectHandler
 {
+    ColorChanger _colorChanger;
+
+    private void Awake()
+    {
+        _colorChanger = transform.GetChild(0).GetComponent<ColorChanger>();
+    }
+
+    private void OnDisable()
+    {
+        _colorChanger.IsCurrentlyActive = false;
+    }
+
     public void OnSelect(BaseEventData eventData)
     {
-        transform.GetChild(0).GetComponent<ColorChanger>().CurrentlyActive = true;
+        _colorChanger.IsCurrentlyActive = true;
     }
 
     public void OnDeselect(BaseEventData eventData)
     {
-        transform.GetChild(0).GetComponent<ColorChanger>().CurrentlyActive = false;
+        _colorChanger.IsCurrentlyActive = false;
     }
 
  
