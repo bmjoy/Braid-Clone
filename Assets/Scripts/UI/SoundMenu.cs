@@ -20,7 +20,7 @@ public class SoundMenu : MonoBehaviour
     private void OnEnable()
     {
         EventSystem.current.SetSelectedGameObject(SliderSFXVolume);
-        AudioManager.Instance.Play("menu");
+        AudioManager.Instance.Play(Sound.MENU);
     }
 
     public float SFXVolume

@@ -10,7 +10,7 @@ public class UIManager : Singleton<UIManager>
         if (Input.GetButtonDown("Cancel"))
         {
             StateUpdate();
-            AudioManager.Instance.Play("menu");
+            AudioManager.Instance.Play(Sound.MENU);
         }
     }
 

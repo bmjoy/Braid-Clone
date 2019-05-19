@@ -20,7 +20,7 @@ public class Gate : MonoBehaviour
         {
             yield return null;
             transform.Translate(Vector2.down * (_speed * Time.deltaTime));
-            AudioManager.Instance.Play("gateOpen");
+            AudioManager.Instance.Play(Sound.GATE_OPEN);
         }
         Destroy(transform.parent.gameObject);
     }

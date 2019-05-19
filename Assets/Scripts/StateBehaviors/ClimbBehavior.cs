@@ -12,7 +12,7 @@ public class ClimbBehavior : StateMachineBehaviour
         _rb = _player.GetComponent<Rigidbody2D>();
         _rb.gravityScale = 0f;
         CurrentLayer = Layer.IGNORE_PLATFORMS;
-        AudioManager.Instance.Play("playerClimb");
+        AudioManager.Instance.Play(Sound.PLAYER_CLIMB);
     }
 
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)

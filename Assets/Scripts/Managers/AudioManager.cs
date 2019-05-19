@@ -2,7 +2,6 @@ using UnityEngine.Audio;
 using System;
 using UnityEngine;
 
-//Based on Brackeys tutorial on how to create an AudioManager https://www.youtube.com/watch?v=6OT43pvUyfY
 public class AudioManager : Singleton<AudioManager>
 {
     [SerializeField]
@@ -53,7 +52,7 @@ public class AudioManager : Singleton<AudioManager>
 
 }
 
-[System.Serializable]
+[Serializable]
 public class Sound
 {
     public string name;
@@ -71,4 +70,15 @@ public class Sound
     [Range(.1f, 3f)]
     public float pitch = 1f;
 
+    #region Sounds
+    public const string PLAYER_BOUNCE = "playerBounce";
+    public const string PLAYER_JUMP = "playerJump";
+    public const string PLAYER_HURT = "playerHurt";
+    public const string PLAYER_CLIMB = "playerClimb";
+    public const string PLAYER_LAND = "playerLand";
+    public const string MONSTAR_HURT = "monstarHurt";
+    public const string PUZZLE_CAPTURED = "puzzleCaptured";
+    public const string GATE_OPEN = "gateOpen";
+    public const string MENU = "menu";
+    #endregion
 }

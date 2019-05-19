@@ -33819,6 +33819,46 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7937185995455996269, guid: ba0780f430e0fb84483c025241d6fd3d,
+        type: 3}
+      propertyPath: m_textAlignment
+      value: 258
+      objectReference: {fileID: 0}
+    - target: {fileID: 7937185995455996269, guid: ba0780f430e0fb84483c025241d6fd3d,
+        type: 3}
+      propertyPath: m_isAlignmentEnumConverted
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7937185995455996269, guid: ba0780f430e0fb84483c025241d6fd3d,
+        type: 3}
+      propertyPath: m_havePropertiesChanged
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7937185995455996269, guid: ba0780f430e0fb84483c025241d6fd3d,
+        type: 3}
+      propertyPath: m_isInputParsingRequired
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7937185996168758407, guid: ba0780f430e0fb84483c025241d6fd3d,
+        type: 3}
+      propertyPath: m_textAlignment
+      value: 258
+      objectReference: {fileID: 0}
+    - target: {fileID: 7937185996168758407, guid: ba0780f430e0fb84483c025241d6fd3d,
+        type: 3}
+      propertyPath: m_isAlignmentEnumConverted
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7937185996168758407, guid: ba0780f430e0fb84483c025241d6fd3d,
+        type: 3}
+      propertyPath: m_havePropertiesChanged
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7937185996168758407, guid: ba0780f430e0fb84483c025241d6fd3d,
+        type: 3}
+      propertyPath: m_isInputParsingRequired
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ba0780f430e0fb84483c025241d6fd3d, type: 3}
 --- !u!1001 &8359938885294357055

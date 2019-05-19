@@ -59,7 +59,7 @@ public class LevelManager : Singleton<LevelManager>
                     StartCoroutine(OnAllEnemiesKilled());
                 }
             }
-            AudioManager.Instance.Play("monstarHurt");
+            AudioManager.Instance.Play(Sound.MONSTAR_HURT);
         }
     }
 
@@ -67,7 +67,7 @@ public class LevelManager : Singleton<LevelManager>
     {
         _puzzleOutline.SetActive(true);
         _puzzlePiece.SetActive(true);
-        AudioManager.Instance.Play("puzzleCaptured");
+        AudioManager.Instance.Play(Sound.PUZZLE_CAPTURED);
     }
 
     private IEnumerator Rumble()

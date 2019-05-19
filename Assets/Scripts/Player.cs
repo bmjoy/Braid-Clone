@@ -142,7 +142,7 @@ public class Player : Character
                 enemy.Death();
                 _rb.velocity = Vector2.zero;
                 ApplyForce();
-                AudioManager.Instance.Play("playerBounce");
+                AudioManager.Instance.Play(Sound.PLAYER_BOUNCE);
             }
             else
             {
@@ -226,7 +226,7 @@ public class Player : Character
         {
             _ghostJump.time = 0;
             ApplyForce();
-            AudioManager.Instance.Play("playerJump");
+            AudioManager.Instance.Play(Sound.PLAYER_JUMP);
         }
 
         if (CurrentState == State.CLIMB && _vertical == 0f)
@@ -337,7 +337,7 @@ public class Player : Character
     public override void Death()
     {
         Destroy(gameObject);
-        AudioManager.Instance.Play("playerHurt");
+        AudioManager.Instance.Play(Sound.PLAYER_HURT);
         OnDeath?.Invoke(transform);
     }
 

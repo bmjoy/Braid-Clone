@@ -10,6 +10,6 @@ public class LandBehaviour : StateMachineBehaviour
 
     private void PlayLandingSound()
     {
-        AudioManager.Instance.Play("playerLand");
+        AudioManager.Instance.Play(Sound.PLAYER_LAND);
     }
 }
