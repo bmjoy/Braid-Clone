@@ -46,7 +46,7 @@ public class Player : Character
         SetDeadZone(ref _horizontal, .8f);
         SetDeadZone(ref _vertical, .8f);
         
-        var speed = isGrounded ? 5f : 2.8f; //If the player is airbourne, we lower his speed so that he can't jump too far across the screen. These values can also be lerped for a smoother transition.
+        var speed = isGrounded ? 5f : 2.8f; //If the player is airbourne, we lower his speed so that he can't jump too far across the screen. This value can also be lerped for a smoother transition.
         var climbSpeed = 3f;
 
         SetGhostJump();

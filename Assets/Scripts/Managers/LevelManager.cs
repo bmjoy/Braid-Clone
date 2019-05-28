@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 using XInputDotNetPure;
 
 public class LevelManager : Singleton<LevelManager>
 {
     [SerializeField]
-    private GameObject _deathPrefab, _monstarIcons, _gate, _puzzleOutline, _puzzlePiece;
+    private GameObject _deathPrefab, _gate, _gateMarkPrefab, _smokeParticlePrefab, _flashingPuzzleOutline, _puzzlePiece;
 
     [SerializeField]
-    private Sprite _darkenedEnemyIcon;
+    private Transform[] _gateCells;
 
     private int _enemyDeathCount, _totalNumOfEnemies;
 
@@ -47,10 +48,9 @@ public class LevelManager : Singleton<LevelManager>
         {
             _enemyDeathCount = value;
 
-            _monstarIcons.transform.GetChild(_enemyDeathCount - 1).gameObject.GetComponent<SpriteRenderer>().sprite = _darkenedEnemyIcon;
-            _monstarIcons.transform.GetChild(_enemyDeathCount - 1).transform.GetChild(0).gameObject.SetActive(true);
-            _gate.transform.GetChild(_enemyDeathCount - 1).gameObject.SetActive(true);
-            _gate.transform.GetChild(_enemyDeathCount - 1).transform.GetChild(0).gameObject.SetActive(true);
+            UIManager.Instance.UpdateEnemyDeathCount(_enemyDeathCount - 1);
+            Instantiate(_gateMarkPrefab, _gateCells[_enemyDeathCount - 1]);
+            Instantiate(_smokeParticlePrefab, _gateCells[_enemyDeathCount - 1]);
 
             if (_enemyDeathCount == _totalNumOfEnemies)
             {
@@ -65,7 +65,7 @@ public class LevelManager : Singleton<LevelManager>
 
     public void CapturePuzzle()
     {
-        _puzzleOutline.SetActive(true);
+        _flashingPuzzleOutline.SetActive(true);
         _puzzlePiece.SetActive(true);
         AudioManager.Instance.Play(Sound.PUZZLE_CAPTURED);
     }

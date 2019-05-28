@@ -29,8 +29,8 @@ public class Raycaster : MonoBehaviour
 
     public bool IsGrounded()
     {
-        float rayLength = .15f;
-        float offset = .02f;
+        var rayLength = .15f;
+        var offset = .02f;
         NumOfVerticalRayCollisions = 0;
 
         Vector2 rayOrigin = _raycastOrigins.bottomLeft + Vector2.up * offset;
@@ -39,7 +39,7 @@ public class Raycaster : MonoBehaviour
         {
             Vector2 ray = rayOrigin + (Vector2.right * (_verticalRaySpacing * i));
             Debug.DrawRay(ray, Vector2.down * rayLength, Color.red);
-            bool hit = Physics2D.Raycast(ray, Vector2.down, rayLength, 1 << LayerMask.NameToLayer("Ground"));
+            var hit = Physics2D.Raycast(ray, Vector2.down, rayLength, 1 << LayerMask.NameToLayer("Ground"));
 
             if (hit)
             {
@@ -68,7 +68,7 @@ public class Raycaster : MonoBehaviour
             {
                 Vector2 ray = rayOrigin + (Vector2.up * (_horizontalRaySpacing * i));
                 Debug.DrawRay(ray, Vector2.right * (directionX * rayLength), Color.red);
-                bool hit = Physics2D.Raycast(ray, Vector2.right * directionX, rayLength, 1 << LayerMask.NameToLayer("Wall"));
+                var hit = Physics2D.Raycast(ray, Vector2.right * directionX, rayLength, 1 << LayerMask.NameToLayer("Wall"));
 
                 if (hit)
                 {

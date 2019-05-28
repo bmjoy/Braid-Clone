@@ -19,7 +19,6 @@ public class Enemy : Character
         _rb = GetComponent<Rigidbody2D>();
         _collider = GetComponent<CircleCollider2D>();
 
-        //The enemy's direction is based on whether or not it is facing right.
         if (!isFacingRight)
         {
             _speed *= -1;
@@ -34,9 +33,7 @@ public class Enemy : Character
     private void Patrol()
     {
         _rb.velocity = new Vector2(_speed, _rb.velocity.y);
-
-        //When your object is a child of another object, use transform.localPosition rather than transform.position. This is so that the compiler doesn't need to
-        //multiply all of the transforms in the hiearchy. Rather, it simply calculates the last matrice, as it is the only one that's been changed.
+      
         if (transform.localPosition.x <= _point1.localPosition.x)
         {
             _speed = Math.Abs(_speed);

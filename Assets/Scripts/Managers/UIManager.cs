@@ -1,9 +1,16 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 public class UIManager : Singleton<UIManager>
 {
     [SerializeField]
     private GameObject _menuBackground, _audioMenuUI, _pauseMenuUI;
+
+    [SerializeField]
+    private Sprite _killedEnemyIcon;
+
+    [SerializeField]
+    private GameObject[] _monstarIcons;
 
     private void Update()
     {
@@ -12,6 +19,11 @@ public class UIManager : Singleton<UIManager>
             StateUpdate();
             AudioManager.Instance.Play(Sound.MENU);
         }
+    }
+
+    public void UpdateEnemyDeathCount(int index)
+    {
+        _monstarIcons[index].GetComponent<Image>().sprite = _killedEnemyIcon;
     }
 
     private void StateUpdate()

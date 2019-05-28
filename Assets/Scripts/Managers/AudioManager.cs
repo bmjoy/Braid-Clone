@@ -17,7 +17,6 @@ public class AudioManager : Singleton<AudioManager>
         foreach (var sound in _sounds)
         {
             sound.source = gameObject.AddComponent<AudioSource>();
-
             sound.source.clip = sound.clip;
             sound.source.loop = sound.loop;
 			sound.source.outputAudioMixerGroup = sound.mixerGroup;
@@ -30,13 +29,11 @@ public class AudioManager : Singleton<AudioManager>
 
         if (s == null)
         {
-            Debug.LogWarning("Sound: " + name + " not found!");
+            Debug.LogError("Sound: " + name + " not found.");
             return;
         }
 
         s.source.volume = s.volume;
-        s.source.pitch = s.pitch;
-
         s.source.Play();
     }
 
@@ -66,9 +63,6 @@ public class Sound
 
     [Range(0f, 1f)]
     public float volume = .75f;
-
-    [Range(.1f, 3f)]
-    public float pitch = 1f;
 
     #region Sounds
     public const string PLAYER_BOUNCE = "playerBounce";
